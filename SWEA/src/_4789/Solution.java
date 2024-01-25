@@ -1,19 +1,12 @@
 package _4789;
 
-
-// 입력받기가 젤 어려웠음,,
-// 1시간 10분동안 입력 문제 해결하느라ㅠ
-// Solution"1"이라고 제출해서 런타임 에러ㅠ
-
-// 설계 10분 + 구현 1시간 25분
-
 import java.io.FileInputStream;
 import java.util.Scanner;
 
-class Solution1 {
+class Solution {
 	public static void main(String args[]) throws Exception {
 
-		System.setIn(new FileInputStream("src/_4789/sample_input.txt"));
+//		System.setIn(new FileInputStream("sample_input.txt"));
 
 		Scanner sc = new Scanner(System.in);
 		int T;
@@ -34,23 +27,26 @@ class Solution1 {
             // 문자열을 숫자 배열로 변환하는 코드
             int[] arr = new int[temp.length()];
             for (int i = 0; i < temp.length(); i++) {
-            	// 메소드 확인...
+            	// Character.getNumericValue(char ch) 메소드: 숫자 형태의 char형을 int형으로 변환
+            	// charAt(int idx): 문자열에서 특정 인덱스에 위치하는 char를 반환
                 arr[i] = Character.getNumericValue(temp.charAt(i));
             }
 
-            // 배열 내용 출력하기
-//            System.out.println(java.util.Arrays.toString(arr));
-            
-            
+            // sum: 시점별 기립 박수를 치고 있는 사람의 수
             int sum = 0;
+            // answer: 동욱이가 고용해야 하는 사람의 수
             int answer = 0;
             
+            
             for (int i=0; i<arr.length; i++) {
+            	
+            	// i 시점에 기립 박수를 위한 조건을 만족하지 못했다면
             	if (sum < i) {
+            		// i-sum 만큼 사람을 고용한다.
             		answer += i - sum;
             		sum = i + arr[i];
             	}
-            	else{
+            	else {
             		sum += arr[i];
             	}
             }
