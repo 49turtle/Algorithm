@@ -71,5 +71,7 @@ class Solution {
 			System.out.printf("#%d %d\n", test_case, answer);
 		}
 		bf.close();
+		
+		
 	}
 }
