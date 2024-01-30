@@ -1,4 +1,4 @@
-package swea_1210_View;
+package swea_1206_View;
 
 import java.io.FileInputStream;
 import java.util.Scanner;
