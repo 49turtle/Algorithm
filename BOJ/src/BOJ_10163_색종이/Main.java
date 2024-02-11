@@ -1,4 +1,4 @@
-package BOJ_10163_색종이;
+package boj_10163_색종이;
 
 import java.util.Scanner;
 
