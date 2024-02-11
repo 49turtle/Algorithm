@@ -59,6 +59,7 @@ public class Solution {
 			
 			for (int c=nw; c<nw+maxCnt; c++) {
 				check[c] = true;
+				
 			}
 			
 			
