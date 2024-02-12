@@ -35,7 +35,7 @@ public class Solution3 {
 		for (int start = 0; start < weak1.length; start++) {
 			int idx = start;
 			int cnt = 0;
-			
+			int i = start;
 			System.out.println("start=" + start);
 			
 			out: for (int d = dist1.length - 1; d >= 0; d--) {
@@ -43,7 +43,7 @@ public class Solution3 {
 
 				cnt++;
 
-				System.out.println("cnt=" + cnt);
+//				System.out.println("cnt=" + cnt);
 //			int distSum = 0;
 //			for (int i=idx; i<idx+weak1.length; i++) {
 //				
@@ -61,8 +61,9 @@ public class Solution3 {
 //				
 //			}
 
-				int i = start;
-				while (weakExtend[i] <= weakExtend[idx] + dist1[d]) {
+				
+				
+				while (weakExtend[i+1] <= weakExtend[idx] + dist1[d]) {
 					i++;
 
 					System.out.println(weakExtend[idx] + dist1[d] + ", idx=" + idx + ", i=" + i);
