@@ -1,4 +1,4 @@
-# # SWEA_1860. 진기의 최고급 붕어빵 D3
+## SWEA_1860. 진기의 최고급 붕어빵 D3
 
 출처: https://swexpertacademy.com/main/code/problem/problemDetail.do?contestProbId=AV5LsaaqDzYDFAXc&
 
