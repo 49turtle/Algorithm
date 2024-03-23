@@ -3,115 +3,144 @@ package boj_14673_CrushFever;
 import java.util.Scanner;
 
 public class Main {
-	
-	static int M;
-	static int N;
-	
-	static int[][] puzzle;
-	
-	static int[] dr = {0, 0, -1, 1};
-	static int[] dc = {1, -1, 0, 0};
-	
-	static int popPuzzleNum;
-	
-	
-	public static void main(String[] args) {
-		
-		Scanner sc = new Scanner(System.in);
-		
-		
-		
-		M = sc.nextInt();
-		N = sc.nextInt();
-		
-		puzzle = new int[N][M];
-		int[][] puzzleCopy = new int[N][M];
-		
-		for (int i=0; i<N; i++) {
-			for (int j=0; j<M; j++) {
-				puzzle[i][j] = sc.nextInt();
-				puzzleCopy[i][j] = puzzle[i][j];
-			}
-		}
-		
-		
-		
-		int answer = 0;
-		for (int r=0; r<N; r++) {
-			for (int c=0; c<M; c++) {
-				
-				if (puzzle[r][c] != 0) {
-					popPuzzleNum = 0;
-					dfs(r, c);
-					goDown();
-				}
-				answer += popPuzzleNum * popPuzzleNum;
-				
-			}
-		}
-				
-		
-		
-		
-		
-		
-		
-		
-		sc.close();
-		
-		
-	}
-	
-	
-	static void dfs(int r, int c) {
-		
-		int nr = r;
-		int nc = c;
-		
-		puzzle[nr][nc] = 0;
-		popPuzzleNum++;
-		
-		for (int d=0; d<4; d++) {
-			nr += dr[d];
-			nc += dc[d];
-			
-			if (nr >= 0 && nr < N && nc >= 0 && nc < M && puzzle[nr][nc] == puzzle[r][c]) {
-				dfs(nr, nc);
-			}
-			
-		}
-		
-		
-		
-		
-	}
-	
-	
-	static void goDown() {
-		
-		for (int i=0; i<M; i++) {
-			int zeroCnt = 0;
-			for (int j=N-1; j>=0; j--) {
-				if (puzzle[j][i] == 0) {
-					zeroCnt++;
-				}
-				else {
-					if (zeroCnt > 0) {
-						puzzle[j+zeroCnt][i] = puzzle[j][i];
-						puzzle[j][i] = 0;
-					}
-					
-				}
-			}
-			
 
-			
-			
+	static int maxScore = 0;
+
+	public static void main(String[] args) {
+
+		Scanner sc = new Scanner(System.in);
+
+		int M = sc.nextInt();
+		int N = sc.nextInt();
+
+		int[][] puzzleMap = new int[N][M];
+
+		for (int r = 0; r < N; r++) {
+			for (int c = 0; c < M; c++) {
+				puzzleMap[r][c] = sc.nextInt();
+			}
+		}
+
+		doDfs(puzzleMap, 0, 0);
+
+		
+		System.out.println(maxScore);
+
+		sc.close();
+
+	}
+
+	static int dfs(int[][] map, int r, int c) {
+
+		int[] dr = { 0, 0, 1, -1 };
+		int[] dc = { 1, -1, 0, 0 };
+		
+		int num = map[r][c];
+		map[r][c] = 0;
+
+		
+		int destroyedPuzzle = 1;
+
+		for (int d = 0; d < 4; d++) {
+			if (r + dr[d] >= 0 && r + dr[d] < map.length && c + dc[d] >= 0 && c + dc[d] < map[0].length
+					&& map[r + dr[d]][c + dc[d]] == num) {
+				int nr = r + dr[d];
+				int nc = c + dc[d];
+				destroyedPuzzle += dfs(map, nr, nc);
+			}
+
+		}
+
+		
+		return destroyedPuzzle;
+	}
+
+	static void doDfs(int[][] map, int cnt, int score) {
+		
+		if (cnt == 3) {
+			maxScore = Math.max(maxScore, score);
+			return;
+		}
+
+		boolean flag = true;
+		
+		for (int r=0; r<map.length; r++) {
+			for (int c=0; c<map[r].length; c++) {
+				if (map[r][c] != 0) {
+					flag = false;
+				}
+			}
 		}
 		
 		
+		if (flag) {
+			maxScore = score;
+			return;
+		}
+		
+		
+		goDown(map);
+
+		for (int r = 0; r < map.length; r++) {
+			for (int c = 0; c < map[r].length; c++) {
+				if (map[r][c] != 0) {
+
+					int[][] copyMap = mapCopy(map);
+
+					int num = dfs(copyMap, r, c);
+					doDfs(copyMap, cnt + 1, score + num * num);
+
+				}
+			}
+		}
+
 	}
-	
-	
+
+	static void goDown(int[][] map) {
+		for (int c = 0; c < map[0].length; c++) {
+			for (int r = map.length - 1; r >= 0; r--) {
+				if (map[r][c] == 0) {
+					int nr = r - 1;
+
+					while (nr >= 0 && map[nr][c] == 0) {
+						nr--;
+					}
+
+					if (nr >= 0) {
+						map[r][c] = map[nr][c];
+						map[nr][c] = 0;
+					}
+
+				}
+			}
+		}
+
+	}
+
+	static int[][] mapCopy(int[][] map) {
+		int[][] copyMap = new int[map.length][map[0].length];
+
+		for (int r = 0; r < map.length; r++) {
+			for (int c = 0; c < map[r].length; c++) {
+				copyMap[r][c] = map[r][c];
+			}
+		}
+
+		return copyMap;
+	}
+
+	static void printMap(int[][] map) {
+
+		System.out.println("---start---");
+		for (int r = 0; r < map.length; r++) {
+			for (int c = 0; c < map[r].length; c++) {
+
+				System.out.print(map[r][c] + " ");
+
+			}
+			System.out.println();
+		}
+
+	}
 
 }
