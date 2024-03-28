@@ -1,4 +1,4 @@
-package swea_1215_하나로;
+package swea_1251_하나로_프림;
 
 import java.util.ArrayList;
 import java.util.Scanner;
