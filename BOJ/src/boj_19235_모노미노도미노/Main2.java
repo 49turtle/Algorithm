@@ -1,8 +1,7 @@
-package boj_20061_모노미노도미노;
+package boj_19235_모노미노도미노;
 
 import java.util.Scanner;
 
-// Main 버전보다 약간은 줄였을지도...
 public class Main2 {
 
 	static int N;
@@ -19,7 +18,7 @@ public class Main2 {
 		N = sc.nextInt();
 
 		greenMap = new int[6][4];
-		// blueMap을 90도 반시계방향 돌려서 greenMap과 같은 로직을 수행하게끔...!
+		// blueMap을 돌려서 greenMap과 같은 로직을 수행하게끔...!
 		blueMap = new int[6][4];
 
 		for (int i = 0; i < N; i++) {
@@ -28,7 +27,7 @@ public class Main2 {
 			int rowGreen = sc.nextInt();
 			int colGreen = sc.nextInt();
 			
-			// 같은 로직을 수행하기 위한 blueMap으로의 커맨드 변환
+			
 			int commandBlue = commandGreen;
 			if (commandGreen == 2) {
 				commandBlue = 3;
@@ -37,29 +36,39 @@ public class Main2 {
 				commandBlue = 2;
 			}
 			
-			// row, col도 90도 회전해줄 것
 			int rowBlue = colGreen;
 			int colBlue = 3 - rowGreen;
 			
-			// 기존 command가 3인 경우의 시작점을 주의할 것!
 			if (commandBlue == 2) {
 				colBlue--;
 			}
-				
+			
+			
 //			System.out.println(commandBlue + " " + rowBlue + " " + colBlue);
 			
 			moveBlock(greenMap, rowGreen, colGreen, commandGreen);
 			moveBlock(blueMap, rowBlue, colBlue, commandBlue);
 			
 			
-			getScore(greenMap);
-            getScore(blueMap);
+			while (isFull(greenMap)) {
+				getScore(greenMap);
+				dropBlocks(greenMap);
+			}
+			
+			
+//			printMap(greenMap);
+			
+			while(isFull(blueMap)) {
+				getScore(blueMap);
+				dropBlocks(blueMap);
+			}
+			
             
             clearLight(greenMap);
             clearLight(blueMap);
 			
 			
-//			printMap(greenMap);
+			
             
 
 		}
@@ -67,8 +76,25 @@ public class Main2 {
 		System.out.println(countBlocks(greenMap) + countBlocks(blueMap));
 
 	}
+	private static void dropBlocks(int[][] map) {
+	    for (int col = 0; col < 4; col++) {
+	        for (int row = 4; row >= 0; row--) {
+	            if (map[row][col] == 1) {
+	                int nextRow = row;
+	                while (nextRow + 1 < 6 && map[nextRow + 1][col] == 0) {
+	                    // 아래로 이동 가능한 최대 거리
+	                    nextRow++;
+	                }
+	                if (nextRow != row) {
+	                    map[nextRow][col] = 1; // 아래로 이동
+	                    map[row][col] = 0; // 원래 위치의 블록을 제거
+	                }
+	            }
+	        }
+	    }
+	}
 
-	// 문제의 정답을 출력하기 위한 map안의 블록 개수 세는 메소드
+
 	private static int countBlocks(int[][] map) {
 		int cnt = 0;
 
@@ -83,7 +109,6 @@ public class Main2 {
 		return cnt;
 	}
 
-	// 연한 부분에 블록이 존재한다면 아래로 밀어서 블록을 움직이자.
 	private static void clearLight(int[][] map) {
 
 		int inLightColor = 0;
@@ -100,7 +125,6 @@ public class Main2 {
 			}
 		}
 
-		// 연한 부분에 블록이 존재하는 행의 길이가 1 또는 2라면
 		if (inLightColor > 0) {
 			int move = inLightColor;
 			for (int r = 5; r >= move; r--) {
@@ -116,10 +140,31 @@ public class Main2 {
 
 		}
 	}
+
 	
-	// 블록이 제거가능한지 판단하면서, 제거가능하다면 바로 그 줄을 삭제해주는 메소드
+	
+	private static boolean isFull(int[][] map) {
+		for (int i=0; i<6; i++) {
+			boolean isFull = true;
+			for (int j=0; j<4; j++) {
+				if (map[i][j] == 0) {
+					isFull = false;
+				}
+			}
+			if (isFull) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
+
+	
+	
+	
 	private static void getScore(int[][] map) {
-		
+
 		for (int i = 0; i < 6; i++) {
 			int idx = 0;
 			boolean isFull = true;
@@ -129,19 +174,16 @@ public class Main2 {
 				}
 				idx++;
 			}
-			// 제거가능한 행이라면 제거
 			if (isFull) {
 				for (int j = i; j >= 0; j--) {
 					for (int c = 0; c < 4; c++) {
 						if (j == 0) {
 							map[j][c] = 0;
 						} else {
-							// 아래의 행을 위의 행의 값으로 대체
 							map[j][c] = map[j - 1][c];
 						}
 					}
 				}
-				// 점수 증가
 				score++;
 			}
 		}
@@ -149,10 +191,8 @@ public class Main2 {
 
 	private static void moveBlock(int[][] map, int row, int col, int command) {
 
-		// 1번 블록이라면?
 		if (command == 1) {
 			for (int i = 0; i < 6; i++) {
-				// 내가 블록을 내려놓을 수 있을 때까지 행을 증가
 				if (i == 5) {
 					map[i][col] = 1;
 					break;
@@ -164,15 +204,12 @@ public class Main2 {
 			}
 		}
 
-		// 2번 블록이라면?(가로로 긴)
 		else if (command == 2) {
 			for (int i = 0; i < 6; i++) {
 				if (i == 5) {
 					map[i][col] = map[i][col + 1] = 1;
 					break;
 				}
-				// 1x2 블록을 내려놓을 수 있는 곳은?
-				// 현재 자리(i, col), (i, col+1)가 비어있고, 그 아래 자리 중 한군데라도 한 블록이 지탱해줄 수 있는 곳!
 				if ((map[i][col] == 0 && map[i][col + 1] == 0)
 						&& (map[i + 1][col] == 1 || map[i + 1][col + 1] == 1)) {
 					map[i][col] = map[i][col + 1] = 1;
@@ -181,15 +218,12 @@ public class Main2 {
 			}
 		}
 
-		// 3번 블록이라면?(세로로 긴)
 		else {
 			for (int i = 0; i < 6; i++) {
 				if (i == 4) {
 					map[i][col] = map[i + 1][col] = 1;
 					break;
 				}
-				// 2x1 블록을 내려놓을 수 있는 곳은?
-				// 현재 자리(i, col), (i+1, col)가 비어있고, 그 밑 자리(i+2, col)가 채워져 있어야 함!
 				if (map[i][col] == 0 && map[i + 1][col] == 0 && map[i + 2][col] == 1) {
 					map[i][col] = map[i + 1][col] = 1;
 					break;
