@@ -8,7 +8,7 @@ public class Main {
 	static int[] dc = { -1, 0, 1, 0 };
 
 	static int answer = 0;
-	
+
 	public static void main(String[] args) {
 
 		Scanner sc = new Scanner(System.in);
@@ -18,15 +18,13 @@ public class Main {
 		int[][] sandMap = new int[N][N];
 
 		int sum = 0;
-		
-		
+
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < sandMap[i].length; j++) {
 				sandMap[i][j] = sc.nextInt();
 				sum += sandMap[i][j];
 			}
 		}
-		answer = sum;
 
 		int nr = N / 2;
 		int nc = N / 2;
@@ -53,8 +51,8 @@ public class Main {
 
 			if (sandMap[nr][nc] != 0) {
 				spreadSand(sandMap, nr, nc, d);
-//				printMap(sandMap);
 			}
+//			printMap(sandMap);
 
 			if (dCnt == dLimit) {
 				d = (d + 1) % 4;
@@ -67,21 +65,19 @@ public class Main {
 			}
 
 		}
-		
-		
-		printMap(sandMap);
-		for (int i=0; i<sandMap.length; i++) {
-			for (int j=0; j<sandMap[i].length; j++) {
+
+		int remain = 0;
+//		printMap(sandMap);
+		for (int i = 0; i < sandMap.length; i++) {
+			for (int j = 0; j < sandMap[i].length; j++) {
 				if (sandMap[i][j] > 0) {
-					
-//					System.out.println(sandMap[i][j]);
-					answer = sum - sandMap[i][j];
+
+					remain += sandMap[i][j];
 				}
 			}
 		}
-		
-		
-		
+
+		answer = sum - remain;
 		System.out.println(answer);
 
 	}
@@ -133,7 +129,8 @@ public class Main {
 		} else {
 			outSand += (int) (sand * 0.07);
 		}
-		remainSand -= (int) (sand * 0.02);
+		remainSand -= (int) (sand * 0.07);
+
 		nr += dr[(d + 1) % 4];
 		nc += dc[(d + 1) % 4];
 		if (nr >= 0 && nc >= 0 && nr < N && nc < N) {
@@ -200,7 +197,7 @@ public class Main {
 
 		nr += 2 * dr[d];
 		nc += 2 * dc[d];
-		
+
 		if (nr >= 0 && nc >= 0 && nr < N && nc < N) {
 			sandMap[nr][nc] += (int) (sand * 0.05);
 		} else {
@@ -208,28 +205,25 @@ public class Main {
 		}
 		remainSand -= (int) (sand * 0.05);
 
-		
 		// 4-2. 정방향 alpha
-		
+
 		nr = row;
 		nc = col;
-		
+
 		nr += dr[d];
 		nc += dc[d];
-		
+
 		if (nr >= 0 && nc >= 0 && nr < N && nc < N) {
 			sandMap[nr][nc] += remainSand;
 		} else {
 			outSand += remainSand;
 		}
 
-		
-		
 		//
 		sandMap[row][col] = 0;
 //		answer += outSand;
 //		System.out.println("sandOUT: " + outSand + ", remain: " + remainSand);
-		
+
 	}
 
 	static void printMap(int[][] map) {
