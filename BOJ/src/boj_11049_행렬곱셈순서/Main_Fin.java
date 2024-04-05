@@ -2,7 +2,7 @@ package boj_11049_행렬곱셈순서;
 
 import java.util.Scanner;
 
-public class Main2 {
+public class Main_Fin {
 
 	public static void main(String[] args) {
 
