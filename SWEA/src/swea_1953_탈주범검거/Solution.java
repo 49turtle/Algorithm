@@ -1,5 +1,6 @@
 package swea_1953_탈주범검거;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
@@ -81,6 +82,7 @@ public class Solution {
 
 	static void bfs(int row, int col, int L) {
 
+		
 		Queue<Integer> queue = new LinkedList<Integer>();
 
 		visited = new boolean[N][M];
