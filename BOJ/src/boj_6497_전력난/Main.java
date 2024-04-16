@@ -9,16 +9,16 @@ public class Main {
 
 		int X;
 		int Y;
-		int Z;
+		int W;
 
-		public Edge(int x, int y, int z) {
+		public Edge(int x, int y, int w) {
 			X = x;
 			Y = y;
-			Z = z;
+			W = w;
 		}
 
 		public int compareTo(Edge e) {
-			return this.Z - e.Z;
+			return this.W - e.W;
 		}
 	}
 
@@ -74,7 +74,7 @@ public class Main {
 
 				if (px != py) {
 					union(px, py);
-					cost += edges[i].Z;
+					cost += edges[i].W;
 					pick++;
 				}
 
