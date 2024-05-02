@@ -15,8 +15,6 @@ public class Solution {
 	static int[][] map;
 	static int[][] dirMap;
 
-	static int[][] decideDir;
-
 	public static void main(String[] args) {
 
 		Scanner sc = new Scanner(System.in);
@@ -41,14 +39,18 @@ public class Solution {
 				dirMap[row][col] = dir;
 
 			}
+			
+			// 반복 횟수 만큼
 			int cnt = 0;
 			while (cnt < M) {
 				cnt++;
+				// 임시 이동 후의 배열을 따로 만든다.
+				// map은 micro의 정보들을
+				// dirMap은 방향의 정보들을 담았음
 				int[][] tempMap = new int[N][N];
 				int[][] tempDirMap = new int[N][N];
 
-				decideDir = new int[N][N];
-
+				// 우선 움직인 후의 정보들을 temp에 저장
 				for (int r = 0; r < N; r++) {
 					for (int c = 0; c < N; c++) {
 						if (map[r][c] > 0) {
@@ -57,6 +59,7 @@ public class Solution {
 					}
 				}
 
+				// 저장된 temp를 활용해서 본 맵을 갱신
 				for (int r = 0; r < N; r++) {
 					for (int c = 0; c < N; c++) {
 						map[r][c] = tempMap[r][c];
@@ -64,12 +67,11 @@ public class Solution {
 					}
 				}
 
-//			    printMap(map);
-//			    printMap(dirMap);
 			}
 
+			
+			// 답을 출력
 			int ans = 0;
-
 			for (int r = 0; r < map.length; r++) {
 				for (int c = 0; c < map[r].length; c++) {
 					ans += map[r][c];
@@ -90,6 +92,7 @@ public class Solution {
 		int nr = row + dr[dir];
 		int nc = col + dc[dir];
 
+		// 각 변마다 방향을 지정해서 바꿔줬어도 괜찮았을 듯
 		if (nr == 0 || nc == 0 || nr == N - 1 || nc == N - 1) {
 
 			if (dir == 1) {
@@ -102,16 +105,43 @@ public class Solution {
 				dir = 3;
 			}
 			micro /= 2;
+			if (micro == 0) {
+				tempMap[nr][nc] = 0;
+				tempDirMap[nr][nc] = 0;
+				return;
+			}
 
 		}
 
 		tempMap[nr][nc] += micro;
+		// 미생물이 안 겹치는 경우
 		if (tempMap[nr][nc] == micro) {
 			tempDirMap[nr][nc] = dir;
-		} else {
-			if (micro > tempMap[nr][nc] - micro) {
-				tempDirMap[nr][nc] = dir;
+		}
+		// 미생물이 겹치는 경우
+		else {
+			int maxMicro = -987654321;	// max 값 초기화!!!!!
+			int maxDir = -1;	// max값일 때 나타낼 방향 정보 초기화!!!
+			// 델타배열 0부터 아니고 1부터 4까지임을 주의!
+			for (int d = 1; d < 5; d++) {
+				// 내가 검사해야할 부분을 기준으로 상하좌우 새로 탐색
+				int nnr = nr + dr[d];
+				int nnc = nc + dc[d];
+				// 범위 안에 있고, 방향값이 존재하는 위치라면
+				if (nnr >= 0 && nnr < N && nnc >= 0 && nnc < N && dirMap[nnr][nnc] > 0) {
+					// 방향을 임시로 저장하고,
+					int tmpDir = dirMap[nnr][nnc];
+					// 해당 셀에서 방향만큼 움직였을 때 nr, nc로 올 수 있다면
+					if (nnr + dr[tmpDir] == nr && nnc + dc[tmpDir] == nc && maxMicro < map[nnr][nnc]) {
+						// 최댓값을 찾아 갱신해 저장하기
+						maxDir = tmpDir;
+						maxMicro = map[nnr][nnc];
+					}
+				}
+				dir = maxDir;
 			}
+			// 최대 군집의 방향으로 dir을 갱신
+			tempDirMap[nr][nc] = dir;
 		}
 
 	}
