@@ -1,5 +1,7 @@
 package swea_2382_미생물격리;
 
+
+
 import java.util.Scanner;
 
 public class Solution {
