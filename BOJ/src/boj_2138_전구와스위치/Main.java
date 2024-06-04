@@ -18,18 +18,17 @@ public class Main {
 		String temp = sc.next();
 		
 		for (int i=0; i<N; i++) {	
-			if (temp.charAt(i) == 0) {
+			if (temp.charAt(i) == '0') {
 				before[i] = 0;
 				continue;
 			}
 			before[i] = 1;
 		}
 		
-		
 		temp = sc.next();
 		
 		for (int i=0; i<N; i++) {
-			if (temp.charAt(i) == 0) {
+			if (temp.charAt(i) == '0') {
 				after[i] = 0;
 				continue;
 			}
