@@ -1,3 +1,12 @@
+
+/**
+ * 풀이 순서
+ * 1. 곡괭이 하나당 캘 수 있는 미네랄 개수인 5개로 partition을 구분
+ * 2. 각 partition을 다중 조건으로(dia -> iron -> stone 순) 정렬하기
+ * 3. 정렬된 순서대로 피로도의 최솟값을 계산
+ */
+
+
 import java.util.*;
 
 class Solution {
