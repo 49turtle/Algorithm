@@ -1,8 +1,8 @@
-package boj_17386_선분교차1;
+package boj_17386_선분교차1.assets;
 
 import java.util.Scanner;
 
-public class Main {
+public class Main_성진_참고 {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
