@@ -1,193 +1,86 @@
-package boj_2342_DanceDanceRevolution;
-
 import java.util.Scanner;
-
-
-
-// 각 스텝별 k에 따른 (왼발, 오른발) 위치에 따른 사용되는 최소의 힘을 저장하는 arr를 사용
-// (왼발, 오른발) 좌우 바뀌는 것 고려 안해도 모든 경우의 수를 커버할 수 있음
 
 public class Main {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		Scanner sc = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);
 
-		int[][][] arr = new int[5][5][100001];
+        // 입력 -> int형 배열 step에 0 빼고 저장
+        String[] input = sc.nextLine().split(" ");
+        int[] step = new int[input.length-1];
+        for (int i=0; i<input.length-1; i++){
+            step[i] = Integer.parseInt(input[i]);
+        }
 
-		int k = 0;
+        // dp 테이블 생성
+        // 왼발 / 오른발 / 스텝
+        int[][][] dp = new int[5][5][input.length];
 
-		int num = sc.nextInt();
+        // dp 초기화
+        for (int i=0; i<5; i++){
+            for (int j=0; j<5; j++){
+                for (int k=0; k<dp[i][j].length; k++){
+                    dp[i][j][k] = Integer.MAX_VALUE;
+                }
+            }
+        }
 
-		// 0이 입력되는 경우 처리
-		if (num == 0) {
-			System.out.println(0);
-			return;
-		}
+        // 0번째 스텝 (0, 0)은 필요한 힘: 0
+        dp[0][0][0] = 0;
 
-		while (num != 0) {
+        // dp 조작
+        for (int k=0; k<input.length-1; k++){
+            int next = step[k];
+            for (int i=0; i<5; i++){
+                for (int j=0; j<5; j++){
+                    int prevPower = dp[i][j][k];
+                    if (prevPower == Integer.MAX_VALUE) {
+                        continue;
+                    }
+                    // 왼발을 움직이는 경우
+                    dp[next][j][k+1] = Math.min(dp[next][j][k+1], prevPower + stepPower(i, next));
+                    // 오른발을 움직이는 경우
+                    dp[i][next][k+1] = Math.min(dp[i][next][k+1], prevPower + stepPower(j, next));
+                }
+            }
+        }
 
-			for (int i = 0; i < 5; i++) {
-				for (int j = 0; j < 5; j++) {
-					arr[i][j][k] = Integer.MAX_VALUE;
-				}
-			}
 
-			if (k == 0) {
-				arr[0][num][k] = 2;
-//				arr[num][0][k] = 2;
-			}
+        int answer = Integer.MAX_VALUE;
 
-			else {
-				for (int i = 0; i < 5; i++) {
-					for (int j = 0; j < 5; j++) {
+        for (int i=0; i<5; i++){
+//            System.out.println();
+            for (int j=0; j<5; j++){
+//                System.out.print(dp[i][j][1] + " ");
+                if (answer > dp[i][j][input.length-1]){
+                    answer = dp[i][j][input.length-1];
+                }
+            }
+        }
+        System.out.println(answer);
 
-						if (arr[i][j][k - 1] != Integer.MAX_VALUE) {
+    }
 
-							// 이미 발이 놓여져 있는 경우(필요한 힘: 1)를 먼저 처리
-							if (num == i || num == j) {
-								arr[i][j][k] = arr[i][j][k - 1] + 1;
-							}
+    
+    static int stepPower(int prev, int next){
+        // 전과 후가 같은 칸인 경우
+        if (prev == next){
+            return 1;
+        }
+        // 전에 0번에 위치했던 경우
+        else if(prev == 0){
+            return 2;
+        }
+        // 차이가 2인 경우(건너 뛰어가는 경우)
+        else if(Math.abs(prev - next) == 2){
+            return 4;
+        }
+        // 인접한 곳으로 이동하는 경우
+        else{
+            return 3;
+        }
+    }
 
-							// 이미 발이 놓여져 있지 않은 경우
-							else {
-								
-								// 아직 한 발이 중앙에 남아있는 경우 1
-								if (i == 0) {
-									// 중앙의 발을 움직이는 경우(필요한 힘: 2)
-									arr[num][j][k] = Math.min(arr[num][j][k], arr[i][j][k - 1] + 2);
 
-									// 중앙의 발을 움직이지 않고, j 위치의 발을 움직여 밟는 경우(필요한 힘: 3 또는 4)
-									if (Math.abs(num - j) == 2) {
-										// 반대편 이동
-										arr[i][num][k] = Math.min(arr[i][num][k], arr[i][j][k - 1] + 4);
-									} else {
-										// 인접한 지점 이동
-										arr[i][num][k] = Math.min(arr[i][num][k], arr[i][j][k - 1] + 3);
-									}
-								}
-								// 아직 한 발이 중앙에 남아있는 경우 2
-								// 위와 동일
-								else if (j == 0) {									
-									arr[i][num][k] = Math.min(arr[i][num][k], arr[i][j][k - 1] + 2);
-									if (Math.abs(num - i) == 2) {
-										arr[num][j][k] = Math.min(arr[num][j][k], arr[i][j][k - 1] + 4);
-									} else {
-										arr[num][j][k] = Math.min(arr[num][j][k], arr[i][j][k - 1] + 3);
-									}
-								}
-
-								// 두 발 전부 중앙에 없는 경우
-								else {
-									// i 위치의 발을 옮기는 경우
-									if (Math.abs(num - i) == 2) {
-										arr[num][j][k] = Math.min(arr[num][j][k], arr[i][j][k - 1] + 4);
-									} else {
-										arr[num][j][k] = Math.min(arr[num][j][k], arr[i][j][k - 1] + 3);
-									}
-									// j 위치의 발을 옮기는 경우
-									if (Math.abs(num - j) == 2) {
-										arr[i][num][k] = Math.min(arr[i][num][k], arr[i][j][k - 1] + 4);
-									} else {
-										arr[i][num][k] = Math.min(arr[i][num][k], arr[i][j][k - 1] + 3);
-									}
-
-								}
-							}
-
-						}
-					}
-				}
-			}
-
-			k++;
-
-			num = sc.nextInt();
-			
-		}
-
-		int answer = Integer.MAX_VALUE;
-
-		for (int i = 0; i < 5; i++) {
-//			System.out.println();
-			for (int j = 0; j < 5; j++) {
-//				System.out.print(arr[i][j][k-1] + " ");
-
-				if (answer > arr[i][j][k - 1]) {
-					answer = arr[i][j][k - 1];
-				}
-			}
-		}
-
-		System.out.println(answer);
-
-	}
 }
-
-
-
-// 반례....
-/*
-1 2 2 4 0
-8
-
-1 0
-2
-
-0
-0
-
-1 2 1 0
-5
-
-1 2 1 2 1 2 0
-8
-
-1 3 2 4 1 2 0
-14
-
-1 3 2 2 0
-8
-
-1 3 2 0
-7
-
-1 2 3 1 2 0
-11
-
-연속선택
-1 3 2 2 2 1 0
-10
-
-1 3 2 2 2 4 0
-12
-
-1 3 2 2 2 4 2 0
-13
-
-1 3 2 2 2 3 0
-10
-
-1 3 2 2 1 1 0
-10
-
-1 3 2 2 1 1 0
-10
-
-1 3 2 4 1 3 2 4 0
-20
-
-1 2 3 0
-7
-
-4 4 4 0
-4
-
-첫두번을 한쪽발로만 밟는 경우
-1 2 3 2 0
-8
-
-1 2 3 2 1 0
-11
-
-*/
