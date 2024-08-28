@@ -1,3 +1,5 @@
+package boj_2342_DanceDanceRevolution;
+
 import java.util.Scanner;
 
 public class Main {

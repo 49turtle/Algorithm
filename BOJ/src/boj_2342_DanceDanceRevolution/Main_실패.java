@@ -7,7 +7,7 @@ import java.util.Scanner;
 // 각 스텝별 k에 따른 (왼발, 오른발) 위치에 따른 사용되는 최소의 힘을 저장하는 arr를 사용
 // (왼발, 오른발) 좌우 바뀌는 것 고려 안해도 모든 경우의 수를 커버할 수 있음
 
-public class Main {
+public class Main_실패 {
 
 	public static void main(String[] args) {
 
